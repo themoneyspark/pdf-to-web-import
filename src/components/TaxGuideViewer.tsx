@@ -14,6 +14,7 @@ import ComparisonCharts from "@/components/ComparisonCharts";
 import NewProvisions2025 from "@/components/NewProvisions2025";
 import EntityImpactAnalysis from "@/components/EntityImpactAnalysis";
 import GovernmentReferences from "@/components/GovernmentReferences";
+import DownloadGuide from "@/components/DownloadGuide";
 
 // Chart mapping
 const chartComponents: Record<string, React.ComponentType> = {
@@ -287,6 +288,8 @@ export default function TaxGuideViewer() {
               aria-label="Search tax guide content"
             />
           </div>
+
+          <DownloadGuide />
 
           <Button
             variant="outline"
