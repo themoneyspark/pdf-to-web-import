@@ -19,6 +19,10 @@ interface WordData {
   newProvisions: any[];
   entityImpacts: any[];
   governmentRefs: any[];
+  taxBrackets2024: any[];
+  taxBrackets2025: any[];
+  saltHistory2024: any[];
+  saltHistory2025: any[];
 }
 
 const stripHtml = (html: string) => {
@@ -171,7 +175,117 @@ export const generateWord = async (data: WordData) => {
         text: '2024 vs 2025 Tax Comparison',
         heading: HeadingLevel.HEADING_1,
         spacing: { before: 400, after: 200 },
-      }),
+      })
+    );
+
+    // Tax Brackets 2024
+    children.push(
+      new Paragraph({
+        text: 'Federal Tax Brackets - 2024',
+        heading: HeadingLevel.HEADING_2,
+        spacing: { before: 300, after: 150 },
+      })
+    );
+
+    if (data.taxBrackets2024?.length > 0) {
+      const taxBrackets2024Table = new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            children: [
+              new TableCell({
+                children: [new Paragraph({ text: 'Filing Status', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+              new TableCell({
+                children: [new Paragraph({ text: 'Bracket Min', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+              new TableCell({
+                children: [new Paragraph({ text: 'Bracket Max', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+              new TableCell({
+                children: [new Paragraph({ text: 'Tax Rate', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+            ],
+          }),
+          ...data.taxBrackets2024.map(
+            (bracket: any) =>
+              new TableRow({
+                children: [
+                  new TableCell({ children: [new Paragraph(bracket.filingStatus)] }),
+                  new TableCell({
+                    children: [new Paragraph(`$${bracket.bracketMin?.toLocaleString()}`)],
+                  }),
+                  new TableCell({
+                    children: [new Paragraph(bracket.bracketMax ? `$${bracket.bracketMax?.toLocaleString()}` : 'No limit')],
+                  }),
+                  new TableCell({ children: [new Paragraph(`${bracket.taxRate}%`)] }),
+                ],
+              })
+          ),
+        ],
+      });
+      children.push(taxBrackets2024Table);
+    }
+
+    // Tax Brackets 2025
+    children.push(
+      new Paragraph({
+        text: 'Federal Tax Brackets - 2025',
+        heading: HeadingLevel.HEADING_2,
+        spacing: { before: 300, after: 150 },
+      })
+    );
+
+    if (data.taxBrackets2025?.length > 0) {
+      const taxBrackets2025Table = new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            children: [
+              new TableCell({
+                children: [new Paragraph({ text: 'Filing Status', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+              new TableCell({
+                children: [new Paragraph({ text: 'Bracket Min', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+              new TableCell({
+                children: [new Paragraph({ text: 'Bracket Max', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+              new TableCell({
+                children: [new Paragraph({ text: 'Tax Rate', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+            ],
+          }),
+          ...data.taxBrackets2025.map(
+            (bracket: any) =>
+              new TableRow({
+                children: [
+                  new TableCell({ children: [new Paragraph(bracket.filingStatus)] }),
+                  new TableCell({
+                    children: [new Paragraph(`$${bracket.bracketMin?.toLocaleString()}`)],
+                  }),
+                  new TableCell({
+                    children: [new Paragraph(bracket.bracketMax ? `$${bracket.bracketMax?.toLocaleString()}` : 'No limit')],
+                  }),
+                  new TableCell({ children: [new Paragraph(`${bracket.taxRate}%`)] }),
+                ],
+              })
+          ),
+        ],
+      });
+      children.push(taxBrackets2025Table);
+    }
+
+    // Standard Deductions
+    children.push(
       new Paragraph({
         text: 'Standard Deductions',
         heading: HeadingLevel.HEADING_2,
@@ -223,6 +337,7 @@ export const generateWord = async (data: WordData) => {
       children.push(standardDeductionsTable);
     }
 
+    // Retirement Limits
     children.push(
       new Paragraph({
         text: 'Retirement Contribution Limits',
@@ -273,6 +388,102 @@ export const generateWord = async (data: WordData) => {
         ],
       });
       children.push(retirementLimitsTable);
+    }
+
+    // SALT Deduction History 2024
+    children.push(
+      new Paragraph({
+        text: 'SALT Deduction Limits - 2024',
+        heading: HeadingLevel.HEADING_2,
+        spacing: { before: 300, after: 150 },
+      })
+    );
+
+    if (data.saltHistory2024?.length > 0) {
+      const saltHistory2024Table = new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            children: [
+              new TableCell({
+                children: [new Paragraph({ text: 'Filing Status', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+              new TableCell({
+                children: [new Paragraph({ text: 'Deduction Cap', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+              new TableCell({
+                children: [new Paragraph({ text: 'Phaseout Threshold', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+            ],
+          }),
+          ...data.saltHistory2024.map(
+            (item: any) =>
+              new TableRow({
+                children: [
+                  new TableCell({ children: [new Paragraph(item.filingStatus)] }),
+                  new TableCell({
+                    children: [new Paragraph(`$${item.deductionCap?.toLocaleString()}`)],
+                  }),
+                  new TableCell({
+                    children: [new Paragraph(item.phaseoutThreshold ? `$${item.phaseoutThreshold?.toLocaleString()}` : 'N/A')],
+                  }),
+                ],
+              })
+          ),
+        ],
+      });
+      children.push(saltHistory2024Table);
+    }
+
+    // SALT Deduction History 2025
+    children.push(
+      new Paragraph({
+        text: 'SALT Deduction Limits - 2025',
+        heading: HeadingLevel.HEADING_2,
+        spacing: { before: 300, after: 150 },
+      })
+    );
+
+    if (data.saltHistory2025?.length > 0) {
+      const saltHistory2025Table = new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            children: [
+              new TableCell({
+                children: [new Paragraph({ text: 'Filing Status', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+              new TableCell({
+                children: [new Paragraph({ text: 'Deduction Cap', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+              new TableCell({
+                children: [new Paragraph({ text: 'Phaseout Threshold', bold: true })],
+                shading: { fill: 'E8F4F8' },
+              }),
+            ],
+          }),
+          ...data.saltHistory2025.map(
+            (item: any) =>
+              new TableRow({
+                children: [
+                  new TableCell({ children: [new Paragraph(item.filingStatus)] }),
+                  new TableCell({
+                    children: [new Paragraph(`$${item.deductionCap?.toLocaleString()}`)],
+                  }),
+                  new TableCell({
+                    children: [new Paragraph(item.phaseoutThreshold ? `$${item.phaseoutThreshold?.toLocaleString()}` : 'N/A')],
+                  }),
+                ],
+              })
+          ),
+        ],
+      });
+      children.push(saltHistory2025Table);
     }
 
     // New 2025 Provisions

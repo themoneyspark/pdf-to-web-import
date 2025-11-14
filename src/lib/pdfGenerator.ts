@@ -110,6 +110,10 @@ interface PDFData {
   newProvisions: any[];
   entityImpacts: any[];
   governmentRefs: any[];
+  taxBrackets2024: any[];
+  taxBrackets2025: any[];
+  saltHistory2024: any[];
+  saltHistory2025: any[];
 }
 
 const stripHtml = (html: string) => {
@@ -195,6 +199,72 @@ const TaxGuidePDF = ({ data }: { data: PDFData }) => {
       { size: 'LETTER', style: styles.page },
       React.createElement(Text, { style: styles.header }, '2024 vs 2025 Tax Comparison'),
 
+      // Tax Brackets
+      React.createElement(Text, { style: styles.subheader }, 'Federal Tax Brackets - 2024'),
+      React.createElement(
+        View,
+        { style: styles.table },
+        React.createElement(
+          View,
+          { style: styles.tableHeader },
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Filing Status'),
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Bracket Min'),
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Bracket Max'),
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Tax Rate')
+        ),
+        ...(data.taxBrackets2024 || []).slice(0, 10).map((bracket: any, idx: number) =>
+          React.createElement(
+            View,
+            { key: idx, style: styles.tableRow },
+            React.createElement(Text, { style: styles.tableCell }, bracket.filingStatus),
+            React.createElement(Text, { style: styles.tableCell }, `$${bracket.bracketMin?.toLocaleString()}`),
+            React.createElement(Text, { style: styles.tableCell }, bracket.bracketMax ? `$${bracket.bracketMax?.toLocaleString()}` : 'No limit'),
+            React.createElement(Text, { style: styles.tableCell }, `${bracket.taxRate}%`)
+          )
+        )
+      ),
+
+      React.createElement(
+        View,
+        { style: styles.footer },
+        React.createElement(Text, null, 'KGOB CPA Partners - 2025 Tax Planning Guide'),
+        React.createElement(
+          Text,
+          {
+            render: ({ pageNumber, totalPages }: any) => `Page ${pageNumber} of ${totalPages}`,
+          }
+        )
+      )
+    ),
+
+    // Tax Brackets 2025 (continued)
+    React.createElement(
+      Page,
+      { size: 'LETTER', style: styles.page },
+      React.createElement(Text, { style: styles.subheader }, 'Federal Tax Brackets - 2025'),
+      React.createElement(
+        View,
+        { style: styles.table },
+        React.createElement(
+          View,
+          { style: styles.tableHeader },
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Filing Status'),
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Bracket Min'),
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Bracket Max'),
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Tax Rate')
+        ),
+        ...(data.taxBrackets2025 || []).slice(0, 10).map((bracket: any, idx: number) =>
+          React.createElement(
+            View,
+            { key: idx, style: styles.tableRow },
+            React.createElement(Text, { style: styles.tableCell }, bracket.filingStatus),
+            React.createElement(Text, { style: styles.tableCell }, `$${bracket.bracketMin?.toLocaleString()}`),
+            React.createElement(Text, { style: styles.tableCell }, bracket.bracketMax ? `$${bracket.bracketMax?.toLocaleString()}` : 'No limit'),
+            React.createElement(Text, { style: styles.tableCell }, `${bracket.taxRate}%`)
+          )
+        )
+      ),
+
       React.createElement(Text, { style: styles.subheader }, 'Standard Deductions'),
       React.createElement(
         View,
@@ -219,6 +289,23 @@ const TaxGuidePDF = ({ data }: { data: PDFData }) => {
         )
       ),
 
+      React.createElement(
+        View,
+        { style: styles.footer },
+        React.createElement(Text, null, 'KGOB CPA Partners - 2025 Tax Planning Guide'),
+        React.createElement(
+          Text,
+          {
+            render: ({ pageNumber, totalPages }: any) => `Page ${pageNumber} of ${totalPages}`,
+          }
+        )
+      )
+    ),
+
+    // Retirement Limits & SALT
+    React.createElement(
+      Page,
+      { size: 'LETTER', style: styles.page },
       React.createElement(Text, { style: styles.subheader }, 'Retirement Contribution Limits'),
       React.createElement(
         View,
@@ -239,6 +326,51 @@ const TaxGuidePDF = ({ data }: { data: PDFData }) => {
             React.createElement(Text, { style: styles.tableCell }, `$${item.limit_2024?.toLocaleString()}`),
             React.createElement(Text, { style: styles.tableCell }, `$${item.limit_2025?.toLocaleString()}`),
             React.createElement(Text, { style: styles.tableCell }, `$${item.change?.toLocaleString()}`)
+          )
+        )
+      ),
+
+      // SALT Deduction History
+      React.createElement(Text, { style: styles.subheader }, 'SALT Deduction Limits - 2024'),
+      React.createElement(
+        View,
+        { style: styles.table },
+        React.createElement(
+          View,
+          { style: styles.tableHeader },
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Filing Status'),
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Deduction Cap'),
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Phaseout Threshold')
+        ),
+        ...(data.saltHistory2024 || []).map((item: any, idx: number) =>
+          React.createElement(
+            View,
+            { key: idx, style: styles.tableRow },
+            React.createElement(Text, { style: styles.tableCell }, item.filingStatus),
+            React.createElement(Text, { style: styles.tableCell }, `$${item.deductionCap?.toLocaleString()}`),
+            React.createElement(Text, { style: styles.tableCell }, item.phaseoutThreshold ? `$${item.phaseoutThreshold?.toLocaleString()}` : 'N/A')
+          )
+        )
+      ),
+
+      React.createElement(Text, { style: styles.subheader }, 'SALT Deduction Limits - 2025'),
+      React.createElement(
+        View,
+        { style: styles.table },
+        React.createElement(
+          View,
+          { style: styles.tableHeader },
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Filing Status'),
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Deduction Cap'),
+          React.createElement(Text, { style: styles.tableCellHeader }, 'Phaseout Threshold')
+        ),
+        ...(data.saltHistory2025 || []).map((item: any, idx: number) =>
+          React.createElement(
+            View,
+            { key: idx, style: styles.tableRow },
+            React.createElement(Text, { style: styles.tableCell }, item.filingStatus),
+            React.createElement(Text, { style: styles.tableCell }, `$${item.deductionCap?.toLocaleString()}`),
+            React.createElement(Text, { style: styles.tableCell }, item.phaseoutThreshold ? `$${item.phaseoutThreshold?.toLocaleString()}` : 'N/A')
           )
         )
       ),
